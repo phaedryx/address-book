@@ -38,7 +38,9 @@
 
   AddressBook = React.createClass({
     render: function() {
-      return div({}, h2({}, "Address Book"), AddressAddForm(), AddressList());
+      return div({
+        id: "address-book"
+      }, h2({}, "Address Book"), AddressAddForm(), AddressList());
     }
   });
 

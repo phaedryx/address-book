@@ -34,7 +34,7 @@ AddressList = React.createClass(
 
 AddressBook = React.createClass(
   render: ->
-    div {},
+    div {id: "address-book"},
       h2 {},
         "Address Book",
       AddressAddForm(),
