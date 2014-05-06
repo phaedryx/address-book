@@ -31,9 +31,13 @@ AddressAddForm = React.createClass(
   render: ->
     form {onSubmit: @submit},
       input {type: 'text', placeholder: 'first name',    ref: 'firstName'},
+        ""
       input {type: 'text', placeholder: 'last name',     ref: 'lastName'},
+        ""
       input {type: 'text', placeholder: 'email address', ref: 'email'},
+        ""
       input {type: 'text', placeholder: 'phone number',  ref: 'phone'},
+        ""
       input {type: 'submit', className: 'btn btn-blue', value: 'Add'}
 )
 
