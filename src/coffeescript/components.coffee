@@ -26,6 +26,7 @@ AddressAddForm = React.createClass(
         phone: #{phone.state.value}
     """
     alert(message)
+    false
 
   render: ->
     form {onSubmit: @submit},
