@@ -10,6 +10,7 @@ class AddressBook
 
   addAddress: (address) ->
     @addresses.push(address)
+
   removeAddress: (address) ->
     @addresses = @addresses.filter((a) -> a.key != address.key)
 
