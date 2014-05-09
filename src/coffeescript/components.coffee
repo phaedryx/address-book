@@ -38,7 +38,7 @@ AddressList = React.createClass(
         td({}, address.email),
         td({}, address.phone),
         td {},
-          button({onClick: alert("removed")}, "remove")
+          button({onClick: => alert("removed")}, "remove")
 
     table {},
       thead {},
