@@ -1,89 +1,73 @@
 {
-  div, h2, h3, span,
+  div, h2, h3, span, a,
   table, thead, tbody, th, tr, td,
-  form, label, input
+  form, label, input, button
 } = React.DOM
-
-class AddressBook
-  constructor: (addresses) ->
-    @addresses = if (addresses instanceof Array) then addresses else []
-
-  addAddress: (address) ->
-    @addresses.push(address)
-
-  removeAddress: (address) ->
-    @addresses = @addresses.filter((a) -> a.key != address.key)
-
 
 AddressAddForm = React.createClass(
   submit: ->
     {firstName, lastName, email, phone} = @refs
-    message = """
-      submitted:
-        first name: #{firstName.state.value}
-        last name: #{lastName.state.value}
-        email: #{email.state.value}
-        phone: #{phone.state.value}
-    """
-    alert(message)
+    @props.addAddress(
+      key: Math.random()
+      firstName: firstName.state.value
+      lastName: lastName.state.value
+      email: email.state.value
+      phone: phone.state.value
+    )
+    firstName.getDOMNode().value = ''
+    lastName.getDOMNode().value = ''
+    email.getDOMNode().value = ''
+    phone.getDOMNode().value = ''
     false
 
   render: ->
-    form {onSubmit: @submit},
-      input {type: 'text', placeholder: 'first name',    ref: 'firstName'},
-        ""
-      input {type: 'text', placeholder: 'last name',     ref: 'lastName'},
-        ""
-      input {type: 'text', placeholder: 'email address', ref: 'email'},
-        ""
-      input {type: 'text', placeholder: 'phone number',  ref: 'phone'},
-        ""
-      input {type: 'submit', className: 'btn btn-blue', value: 'Add'}
+    form {},
+      input(type: 'text', ref: 'firstName', placeholder: 'first name'),
+      input(type: 'text', ref: 'lastName',  placeholder: 'last name'),
+      input(type: 'text', ref: 'email',     placeholder: 'email address'),
+      input(type: 'text', ref: 'phone',     placeholder: 'phone number'),
+      button({onClick: @submit, className: 'btn btn-blue'}, "Add")
 )
 
 AddressList = React.createClass(
   render: ->
     createRow = (address) ->
       tr {},
+        td({}, address.firstName),
+        td({}, address.lastName),
+        td({}, address.email),
+        td({}, address.phone),
         td {},
-          "#{address.firstName}"
-        td {},
-          "#{address.lastName}"
-        td {},
-          "#{address.email}"
-        td {},
-          "#{address.phone}"
-        td {},
-          "remove link"
+          button({onClick: alert("removed")}, "remove")
 
     table {},
       thead {},
         tr {},
-          th {},
-            "First Name",
-          th {},
-            "Last Name",
-          th {},
-            "Email Address"
-          th {},
-            "Phone Number",
-          th {},
-            ""
+          th({}, "First Name"),
+          th({}, "Last Name"),
+          th({}, "Email Address"),
+          th({}, "Phone Number"),
+          th({})
       tbody {},
-        @props.addressBook.addresses.map(createRow)
+        @props.addresses.map(createRow)
 )
 
-App = React.createClass(
-  getInitialState: ->
-    address = {key: 1, firstName: "Bill", lastName: "Jones", email: "", phone: ""}
-    {addressBook: new AddressBook([address])}
+AddressBook = React.createClass(
+  getInitialState: -> {addresses: [{key: 1, firstName: 'Dennis'}]}
+
+  addAddress: (address) ->
+    @state.addresses.push(address)
+    @forceUpdate()
+
+  removeAddress: (address) ->
+    new_addresses = @state.addresses.filter((a) -> a.key != address.key)
+    @setState(addresses: new_addresses)
 
   render: ->
     div {id: "address-book"},
-      h2 {},
-        "Address Book",
-      AddressAddForm({addressBook: @state.addressBook}),
-      AddressList({addressBook: @state.addressBook})
+      h2({}, "Address Book"),
+      AddressAddForm({addAddress: @addAddress}),
+      AddressList({addresses: @state.addresses, removeAddress: @removeAddress})
 )
 
-window.App = App
+window.AddressBook = AddressBook
