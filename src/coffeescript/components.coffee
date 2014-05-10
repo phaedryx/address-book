@@ -7,7 +7,7 @@
 AddressAddForm = React.createClass(
   submit: ->
     {firstName, lastName, email, phone} = @refs
-    @props.addAddress(
+    @props.addressBook.addAddress(
       key: Math.random()
       firstName: firstName.state.value
       lastName: lastName.state.value
@@ -31,14 +31,14 @@ AddressAddForm = React.createClass(
 
 AddressList = React.createClass(
   render: ->
-    createRow = (address) ->
+    createRow = (address) =>
       tr {},
         td({}, address.firstName),
         td({}, address.lastName),
         td({}, address.email),
         td({}, address.phone),
         td {},
-          button({onClick: => alert("removed")}, "remove")
+          button({onClick: => @props.addressBook.removeAddress(address)}, "remove")
 
     table {},
       thead {},
@@ -49,25 +49,29 @@ AddressList = React.createClass(
           th({}, "Phone Number"),
           th({})
       tbody {},
-        @props.addresses.map(createRow)
+        @props.addressBook.addresses.map(createRow)
 )
 
-AddressBook = React.createClass(
-  getInitialState: -> {addresses: [{key: 1, firstName: 'Dennis'}]}
+App = React.createClass(
+  getInitialState: ->
+    app = this
+    addressBook = {
+      addresses: [{key: 1, firstName: "Tad", lastName: "Thorley", email: "tad@example.com", phone: "555-5555"}]
+      addAddress: (address) ->
+        @addresses.push(address)
+        app.setState({addressBook: this})
+      removeAddress: (address) ->
+        @addresses = @addresses.filter((a) -> a.key != address.key)
+        app.setState({addressBook: this})
+    }
 
-  addAddress: (address) ->
-    @state.addresses.push(address)
-    @forceUpdate()
-
-  removeAddress: (address) ->
-    new_addresses = @state.addresses.filter((a) -> a.key != address.key)
-    @setState(addresses: new_addresses)
+    {addressBook: addressBook}
 
   render: ->
     div {id: "address-book"},
       h2({}, "Address Book"),
-      AddressAddForm({addAddress: @addAddress}),
-      AddressList({addresses: @state.addresses, removeAddress: @removeAddress})
+      AddressAddForm({addressBook: @state.addressBook}),
+      AddressList({addressBook: @state.addressBook})
 )
 
-window.AddressBook = AddressBook
+window.App = App
